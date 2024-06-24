@@ -5,8 +5,6 @@ After=network.target
 [Service]
 ExecStart=/apps/mapant-tile-proxy/env/bin/granian --interface wsgi --no-ws --port 19651 --http 1 --workers 4 --threads 4 index:app 
 Restart=always
-User=apps
-Group=apps
 Environment="PATH=/apps/mapant-tile-proxy/env/bin/"
 WorkingDirectory=/apps/mapant-tile-proxy/
 ExecReload=/bin/kill -s HUP $MAINPID
@@ -15,4 +13,4 @@ TimeoutStopSec=5
 PrivateTmp=true
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default
