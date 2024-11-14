@@ -136,7 +136,7 @@ class CustomCrsToWgs84Proxy():
         )
         _, buffer = cv2.imencode(".webp", img, [int(cv2.IMWRITE_WEBP_QUALITY), 40])
         data_out = BytesIO(buffer)
-        return send_file(data_out, mimetype="image/jpeg")
+        return send_file(data_out, mimetype="image/webp")
 
 
 go_kartor_proxy = CustomCrsToWgs84Proxy(
