@@ -27,7 +27,7 @@ def get_osm_tile(z, y, x):
 
 
 class CustomCrsToWgs84Proxy():
-    def __init__(self, proj_def, tile_size, scalefactor, x_offset, y_offset, z_offset, url, extra_tile_z_offset):
+    def __init__(self, proj_def, tile_size, scalefactor, x_offset, y_offset, z_offset, url):
         self.proj_def = proj_def
         self.tile_size = tile_size
         self.scalefactor = scalefactor
@@ -35,7 +35,6 @@ class CustomCrsToWgs84Proxy():
         self.y_offset = y_offset
         self.z_offset = z_offset
         self.url = url
-        self.extra_tile_z_offset = extra_tile_z_offset
 
     def wgs84_to_crs(self, lon, lat):
         return Transformer.from_crs(
@@ -122,7 +121,7 @@ class CustomCrsToWgs84Proxy():
         im = Image.new(mode="RGB", size=(img_width, img_height), color=(255, 255, 255))
         for yy in range(tile_min_y, tile_max_y+1):
             for xx in range(tile_min_x, tile_max_x+1):
-                tile = self.get_crs_tile(z - self.z_offset - self.extra_tile_z_offset, yy, xx)
+                tile = self.get_crs_tile(z - self.z_offset, yy, xx)
                 if tile:
                     Image.Image.paste(im, tile, (int(src_tile_size * (xx - tile_min_x)), int(src_tile_size * (yy - tile_min_y))))
         coeffs, mask = cv2.findHomography(p2, p1, cv2.RANSAC, 5.0)
@@ -142,18 +141,33 @@ class CustomCrsToWgs84Proxy():
 
 go_kartor_proxy = CustomCrsToWgs84Proxy(
     "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs",
-    256, 16384, 265000, 7680000, 2, 'https://kartor.gokartor.se/Master/{z}/{y}/{x}.png', 0
+    256,
+    16384,
+    265000,
+    7680000,
+    2,
+    'https://kartor.gokartor.se/Master/{z}/{y}/{x}.png'
 
 )
 
 mapant_ch_proxy = CustomCrsToWgs84Proxy(
     "+proj=somerc +lat_0=46.9524055555556 +lon_0=7.43958333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs +type=crs",
-    1000, 16384, 2480000, 1302000, 2, 'https://www.mapant.ch/wmts.php?layer=MapAnt%20Switzerland&style=default&tilematrixset=2056&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}', 5
+    1000,
+    512,
+    2480000,
+    1302000,
+    7,
+    'https://www.mapant.ch/wmts.php?layer=MapAnt%20Switzerland&style=default&tilematrixset=2056&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix={z}&TileCol={x}&TileRow={y}'
 )
 
 leisure_uk_proxy = CustomCrsToWgs84Proxy(
     "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs +type=crs",
-    256, 896, -238375, 1376256, 7, 'https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=5T04qXvNDxLX1gCEAXS0INCgLvczGRYw', 0
+    256,
+    896,
+    -238375,
+    1376256,
+    7,
+    'https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=5T04qXvNDxLX1gCEAXS0INCgLvczGRYw'
 )
 
 
