@@ -34,3 +34,4 @@ nginx/certs/*
 .coverage*
 htmlcov/*
 .vercel
+.env

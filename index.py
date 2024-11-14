@@ -7,11 +7,17 @@ import numpy as np
 import cv2
 from flask_caching import Cache
 from slippy_tiles import tile_xy_to_north_west_latlon, latlon_to_tile_xy, latlon_to_tile_xy_offset
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 cache = Cache(config={'CACHE_TYPE': 'FileSystemCache', 'CACHE_DIR': 'cache', 'CACHE_THRESHOLD': 100000})
 app = Flask(__name__)
 cache.init_app(app)
 
+
+OS_KEY = os.getenv("OS_KEY", "")
 
 
 @cache.memoize(60*60)
@@ -167,7 +173,7 @@ leisure_uk_proxy = CustomCrsToWgs84Proxy(
     -238375,
     1376256,
     7,
-    'https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=5T04qXvNDxLX1gCEAXS0INCgLvczGRYw'
+    'https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=' + OS_KEY
 )
 
 
