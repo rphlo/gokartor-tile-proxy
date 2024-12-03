@@ -167,7 +167,6 @@ go_kartor_proxy = CustomCrsToWgs84Proxy(
     7680000,
     2,
     'https://kartor.gokartor.se/Master/{z}/{y}/{x}.png'
-
 )
 
 mapant_ch_proxy = CustomCrsToWgs84Proxy(
