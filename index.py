@@ -129,20 +129,18 @@ class CustomCrsToWgs84Proxy():
 
         thread_pool = ThreadPoolExecutor(4)
         tiles = []
-        
+        futures = []
         for yy in range(tile_min_y, tile_max_y+1):
             for xx in range(tile_min_x, tile_max_x+1):
-                tiles.append(
-                    (z - self.z_offset, yy, xx)
+                tile = (z - self.z_offset, yy, xx)
+                tiles.append(tile)
+                futures.append(
+                    thread_pool.submit(self.get_crs_tile, *tile)
                 )
-        
-        futures = [
-            thread_pool.submit(self.get_crs_tile, *tile)
-            for tile in tiles
-        ]
+
         im = Image.new(mode="RGB", size=(img_width, img_height), color=(255, 255, 255))
         for tile, future in zip(tiles, futures):
-            __, yy, xx = tile
+            _, yy, xx = tile
             tile_img = future.result()
             if tile_img:
                 Image.Image.paste(im, tile_img, (int(src_tile_size * (xx - tile_min_x)), int(src_tile_size * (yy - tile_min_y))))
