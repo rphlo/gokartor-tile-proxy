@@ -9,6 +9,8 @@ from flask_caching import Cache
 from slippy_tiles import tile_xy_to_north_west_latlon, latlon_to_tile_xy, latlon_to_tile_xy_offset
 import os
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
+
 
 load_dotenv()
 
@@ -124,12 +126,26 @@ class CustomCrsToWgs84Proxy():
                 [sw_x + (sw_tile_x - tile_min_x) * src_tile_size, sw_y + (sw_tile_y - tile_min_y) * src_tile_size],
             ]
         )
-        im = Image.new(mode="RGB", size=(img_width, img_height), color=(255, 255, 255))
+
+        thread_pool = ThreadPoolExecutor(4)
+        tiles = []
+        
         for yy in range(tile_min_y, tile_max_y+1):
             for xx in range(tile_min_x, tile_max_x+1):
-                tile = self.get_crs_tile(z - self.z_offset, yy, xx)
-                if tile:
-                    Image.Image.paste(im, tile, (int(src_tile_size * (xx - tile_min_x)), int(src_tile_size * (yy - tile_min_y))))
+                tiles.append(
+                    (z - self.z_offset, yy, xx)
+                )
+        
+        futures = [
+            thread_pool.submit(self.get_crs_tile, *tile)
+            for tile in tiles
+        ]
+        im = Image.new(mode="RGB", size=(img_width, img_height), color=(255, 255, 255))
+        for tile, future in zip(tiles, futures):
+            __, yy, xx = tile
+            tile_img = future.result()
+            if tile_img:
+                Image.Image.paste(im, tile_img, (int(src_tile_size * (xx - tile_min_x)), int(src_tile_size * (yy - tile_min_y))))
         coeffs, mask = cv2.findHomography(p2, p1, cv2.RANSAC, 5.0)
         img_alpha = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGRA)
         img = cv2.warpPerspective(
