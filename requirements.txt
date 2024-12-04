@@ -5,5 +5,5 @@ pillow
 pyproj
 requests
 Flask-Caching
-granian
+gunicorn
 python-dotenv
