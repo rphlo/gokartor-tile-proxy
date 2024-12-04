@@ -76,15 +76,23 @@ class CustomCrsToWgs84Proxy():
 
         return offset_x, offset_y, tile_x, tile_y
     
-    @cache.memoize(5*60)
     def get_crs_tile(self, z, y, x):
+        cache_key = "remote_tile:{self.url}:{x}:{y}:{z}"
+        if im := cache.get(cache_key):
+            return im
+            
         url = self.url.format(x=x, y=y, z=z)
         session = requests.Session()
         session.headers.update({'User-Agent': 'Routechoices.com Tiles Proxy App'})
-        res = session.get(url, stream=True, timeout=5)
+        try:
+            res = session.get(url, stream=True, timeout=10)
+        except Exception:
+            return None
         if res.status_code == 200:
             data = BytesIO(res.raw.read())
-            return Image.open(data)
+            im = Image.open(data)
+            cache.set("remote_tile:{self.url}:{x}:{y}:{z}", im, timeout=5*60)
+            return im
         return None
 
     @cache.memoize(7*24*3600)
