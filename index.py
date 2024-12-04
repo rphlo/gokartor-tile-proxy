@@ -77,7 +77,7 @@ class CustomCrsToWgs84Proxy():
         return offset_x, offset_y, tile_x, tile_y
     
     def get_crs_tile(self, z, y, x):
-        cache_key = "remote_tile:{self.url}:{x}:{y}:{z}"
+        cache_key = f"remote_tile:{self.url}:{x}:{y}:{z}"
         if im := cache.get(cache_key):
             return im
             
