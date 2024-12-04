@@ -133,7 +133,7 @@ class CustomCrsToWgs84Proxy():
                 [sw_x + (sw_tile_x - tile_min_x) * src_tile_size, sw_y + (sw_tile_y - tile_min_y) * src_tile_size],
             ]
         )
-        
+        thread_pool = ThreadPoolExecutor(4)
         futures = []
         tiles = []
         for yy in range(tile_min_y, tile_max_y+1):
