@@ -27,7 +27,7 @@ def get_osm_tile(z, y, x):
     url = f"https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
     session = requests.Session()    
     session.headers.update({'User-Agent': 'Routechoices.com Tiles Proxy App'})
-    res = session.get(url, stream=True)
+    res = session.get(url, stream=True, timeout=5)
     if res.status_code == 200:
         data = BytesIO(res.raw.read())
         return Image.open(data)
@@ -82,7 +82,7 @@ class CustomCrsToWgs84Proxy():
         url = self.url.format(x=x, y=y, z=z)
         session = requests.Session()
         session.headers.update({'User-Agent': 'Routechoices.com Tiles Proxy App'})
-        res = session.get(url, stream=True)
+        res = session.get(url, stream=True, timeout=5)
         if res.status_code == 200:
             data = BytesIO(res.raw.read())
             return Image.open(data)
