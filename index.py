@@ -91,7 +91,7 @@ class CustomCrsToWgs84Proxy():
         if res.status_code == 200:
             data = BytesIO(res.raw.read())
             im = Image.open(data)
-            cache.set("remote_tile:{self.url}:{x}:{y}:{z}", im, timeout=5*60)
+            cache.set(cache_key, im, timeout=5*60)
             return im
         return None
 
