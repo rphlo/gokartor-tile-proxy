@@ -186,10 +186,10 @@ mapant_ch_proxy = CustomCrsToWgs84Proxy(
 )
 
 leisure_uk_proxy = CustomCrsToWgs84Proxy(
-    "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs +type=crs",
+    "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=370,-108,434,0,0,0,0 +units=m +no_defs +type=crs",
     256,
     896,
-    -238450,
+    -238375,
     1376250,
     7,
     'https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=' + OS_KEY
