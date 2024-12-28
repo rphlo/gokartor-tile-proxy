@@ -190,7 +190,7 @@ leisure_uk_proxy = CustomCrsToWgs84Proxy(
     256,
     896,
     -238375,
-    1376250,
+    1376256,
     7,
     'https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=' + OS_KEY
 )
